@@ -1,0 +1,12 @@
+body {
+    background-color: #f8f9fa;
+}
+.table-success {
+    background-color: #d4edda !important;
+}
+.table-warning {
+    background-color: #fff3cd !important;
+}
+.table-danger {
+    background-color: #f8d7da !important;
+}
