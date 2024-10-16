@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Reportes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .badge-success {
+            background-color: #28a745;
+        }
+        .badge-warning {
+            background-color: #ffc107;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+        }
+        .btn-back {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            font-size: 18px;
+            transition: transform 0.2s;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Lista de Reportes</h1>
+
+        <div class="row">
+            {% if reports %}
+                {% for report in reports %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ report.title }}</h5>
+                            <p class="card-text">{{ report.descripcion }}</p>
+                            <p class="card-text">
+                                <strong>Estado:</strong> 
+                                {% if report.estado == 'Activo' %}
+                                    <span class="badge badge-success">Activo</span>
+                                {% elif report.estado == 'Medio' %}
+                                    <span class="badge badge-warning">Medio</span>
+                                {% elif report.estado == 'Critico' %}
+                                    <span class="badge badge-danger">Crítico</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ report.estado }}</span>
+                                {% endif %}
+                            </p>
+                            <p class="card-text"><small class="text-muted">Fecha de Creación: {{ report.created_at.strftime('%Y-%m-%d') }}</small></p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('ver_detalle', id=report.id) }}" class="btn btn-info btn-sm">Ver</a>
+                                <a href="{{ url_for('editar_reporte', id=report.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="{{ url_for('eliminar_reporte', id=report.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este reporte?');">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay reportes disponibles.</p>
+            {% endif %}
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-back">Regresar al Dashboard</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Reporte</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="form-container">
+            <h2 class="mb-4">Editar Reporte</h2>
+
+            <form method="POST" action="{{ url_for('editar_reporte', id=reporte.id) }}">
+                <div class="form-group">
+                    <label for="titulo">Título:</label>
+                    <input type="text" name="titulo" id="titulo" class="form-control" value="{{ reporte.title }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea name="descripcion" id="descripcion" class="form-control" rows="5" required>{{ reporte.descripcion }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select name="estado" id="estado" class="form-control">
+                        <option value="Activo" {% if reporte.estado == 'Activo' %}selected{% endif %}>Activo</option>
+                        <option value="Medio" {% if reporte.estado == 'Medio' %}selected{% endif %}>Medio</option>
+                        <option value="Crítico" {% if reporte.estado == 'Crítico' %}selected{% endif %}>Crítico</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a href="{{ url_for('ver_reportes') }}" class="btn btn-secondary ml-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

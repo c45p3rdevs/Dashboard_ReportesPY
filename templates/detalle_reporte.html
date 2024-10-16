@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Reporte</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Detalle del Reporte</h2>
+
+        <table class="table table-bordered">
+            <tr>
+                <th>Título</th>
+                <td>{{ reporte.title }}</td>
+            </tr>
+            <tr>
+                <th>Descripción</th>
+                <td>{{ reporte.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>
+                    {% if reporte.estado == 'Activo' %}
+                        <span class="badge badge-success">Activo</span>
+                    {% elif reporte.estado == 'Medio' %}
+                        <span class="badge badge-warning">Medio</span>
+                    {% elif reporte.estado == 'Critico' %}
+                        <span class="badge badge-danger">Crítico</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Creado en</th>
+                <td>{{ reporte.created_at }}</td>
+            </tr>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Volver al Dashboard</a>
+        <a href="{{ url_for('editar_reporte', id=reporte.id) }}" class="btn btn-primary">Editar Reporte</a>
+    </div>
+</body>
+</html>

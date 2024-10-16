@@ -4,6 +4,54 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .badge {
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .alert {
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -14,34 +62,81 @@
             {% endfor %}
         </div>
     {% endif %}
-{% endwith %}
+    {% endwith %}
 
     <div class="container">
         <h1>Dashboard</h1>
-        <form method="POST" action="{{ url_for('create_report') }}">
-            <input type="text" name="title" placeholder="Título del reporte" required>
-            <button type="submit" class="btn btn-success">Crear Reporte</button>
-        </form>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Crear Nuevo Reporte</h5>
+                <form method="POST" action="{{ url_for('create_report') }}">
+                    <div class="form-group">
+                        <label for="title">Título</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select class="form-control" id="estado" name="estado" required>
+                            <option value="activo">Activo</option>
+                            <option value="medio">Medio</option>
+                            <option value="critico">Crítico</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Crear Reporte</button>
+                </form>
+            </div>
+        </div>
 
         <h2>Reportes</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Estado</th>
-                    <th>Fecha de Creación</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for report in reports %}
-                <tr>
-                    <td>{{ report.title }}</td>
-                    <td>{{ report.status }}</td>
-                    <td>{{ report.created_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Fecha de creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reporte in reports %}
+                        <tr>
+                            <td>{{ reporte.title }}</td>
+                            <td>{{ reporte.descripcion }}</td>
+                            <td>
+                                {% if reporte.estado == 'Activo' %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% elif reporte.estado == 'Medio' %}
+                                    <span class="badge bg-warning">Medio</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Crítico</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ reporte.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('editar_reporte', id=reporte.id) }}" class="btn btn-primary btn-sm">Editar</a>
+                                <form action="{{ url_for('borrar_reporte', id=reporte.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
