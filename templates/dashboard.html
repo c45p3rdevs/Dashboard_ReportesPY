@@ -47,6 +47,19 @@
             border: none;
             border-radius: 5px;
         }
+        .btn-view {
+            background: linear-gradient(45deg, #ff6b6b, #ffcc6b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            transition: background 0.5s, transform 0.3s;
+        }
+        .btn-view:hover {
+            background: linear-gradient(45deg, #ffcc6b, #ff6b6b);
+            transform: translateY(-2px);
+        }
         h1, h2 {
             color: #333;
             font-weight: bold;
@@ -131,6 +144,10 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('ver_reportes') }}" class="btn-view">Ver Todos los Reportes</a>
         </div>
         
     </div>

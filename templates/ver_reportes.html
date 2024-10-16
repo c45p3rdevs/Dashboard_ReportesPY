@@ -44,6 +44,10 @@
                 transform: scale(1);
             }
         }
+        #myChart {
+            max-width: 600px;
+            margin: 30px auto;
+        }
     </style>
 </head>
 <body>
@@ -85,11 +89,57 @@
             {% endif %}
         </div>
 
+        <canvas id="myChart"></canvas>
+
         <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-back">Regresar al Dashboard</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos de ejemplo, deberías reemplazar esto con datos reales de tus reportes
+        const reportData = {
+            labels: ['Activo', 'Medio', 'Crítico'],
+            datasets: [{
+                label: 'Número de Reportes',
+                data: [
+                    {{ reports | selectattr('estado', 'equalto', 'Activo') | list | length }},
+                    {{ reports | selectattr('estado', 'equalto', 'Medio') | list | length }},
+                    {{ reports | selectattr('estado', 'equalto', 'Critico') | list | length }}
+                ],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.5)',
+                    'rgba(255, 193, 7, 0.5)',
+                    'rgba(220, 53, 69, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: reportData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
 </body>
 </html>
