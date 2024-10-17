@@ -1,0 +1,17 @@
+-- Crear la tabla 'users'
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(150) NOT NULL
+);
+
+
+
+-- Crear la tabla 'reports'
+CREATE TABLE IF NOT EXISTS reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    estado VARCHAR(20) NOT NULL,  -- Activo, Medio, Crítico
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

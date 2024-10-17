@@ -2,8 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            font-family: 'Arial', sans-serif;
+        }
+        .login-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-control {
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
+        .btn-custom {
+            border-radius: 30px;
+            padding: 10px;
+            background-color: #9b59b6;
+            border: none;
+            color: white;
+            width: 100%;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #8e44ad;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+        .extra-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .extra-links a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -14,22 +79,28 @@
             {% endfor %}
         </div>
     {% endif %}
-{% endwith %}
+    {% endwith %}
 
-    <div class="container">
+    <div class="login-container">
         <h1>Iniciar Sesión</h1>
         <form method="POST">
             <div class="form-group">
                 <label for="username">Nombre de usuario:</label>
-                <input type="text" name="username" class="form-control" required>
+                <input type="text" name="username" class="form-control" id="username" placeholder="Introduce tu usuario" required>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" name="password" class="form-control" required>
+                <input type="password" name="password" class="form-control" id="password" placeholder="Introduce tu contraseña" required>
             </div>
-            <button type="submit" class="btn btn-success">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-custom">Iniciar Sesión</button>
         </form>
-        <p>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Crea una cuenta</a></p>
+        <div class="extra-links">
+            <p>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Crea una cuenta</a></p>
+        </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

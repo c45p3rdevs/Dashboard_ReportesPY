@@ -15,7 +15,7 @@ db = SQLAlchemy(app)
 # Modelo de usuario
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), nullable=False, unique=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
 # Modelo de reporte
@@ -67,6 +67,7 @@ def register():
 def dashboard():
     reports = Report.query.all()
     return render_template('dashboard.html', reports=reports)
+
 
 # Crear un nuevo reporte
 @app.route('/create_report', methods=['POST'])
@@ -162,5 +163,5 @@ def eliminar_reporte(id):
 # Inicializar la base de datos y ejecutar la aplicación
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Crea las tablas si no existen
+      db.create_all()  # Crea las tablas si no existen
     app.run(debug=True)

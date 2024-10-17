@@ -2,158 +2,178 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard con Animación</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Arial', sans-serif;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .badge {
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        .alert {
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .form-control {
-            border-radius: 5px;
-        }
-        .btn-success {
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-view {
-            background: linear-gradient(45deg, #ff6b6b, #ffcc6b);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            transition: background 0.5s, transform 0.3s;
-        }
-        .btn-view:hover {
-            background: linear-gradient(45deg, #ffcc6b, #ff6b6b);
-            transform: translateY(-2px);
-        }
-        h1, h2 {
-            color: #333;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% endwith %}
-
     <div class="container">
-        <h1>Dashboard</h1>
+        <h1 class="my-4">Dashboard de Reportes</h1>
 
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Crear Nuevo Reporte</h5>
-                <form method="POST" action="{{ url_for('create_report') }}">
+        <div class="mb-3">
+            <a href="{{ url_for('ver_reportes') }}" class="btn btn-info mb-3">
+                <i class="fas fa-eye"></i> Ver Todos los Reportes
+            </a>
+            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReportModal">
+                <i class="fas fa-plus"></i> Crear Nuevo Reporte
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Reportes Activos</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ reports|length }}</h5>
+                        <p class="card-text">Total de reportes actualmente en el sistema.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header">Reportes Pendientes</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ reports|selectattr('estado', 'equalto', 'Medio')|list|length }}</h5>
+                        <p class="card-text">Total de reportes en estado medio.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-header">Reportes Críticos</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ reports|selectattr('estado', 'equalto', 'Crítico')|list|length }}</h5>
+                        <p class="card-text">Total de reportes en estado crítico.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="myChart" width="400" height="200"></canvas>
+
+        <h3 class="my-4">Gráfico de Estado de Reportes</h3>
+        <script>
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Activos', 'Medios', 'Críticos'],
+                    datasets: [{
+                        label: '# de Reportes',
+                        data: [
+                            {{ reports|selectattr('estado', 'equalto', 'Activo')|list|length }},
+                            {{ reports|selectattr('estado', 'equalto', 'Medio')|list|length }},
+                            {{ reports|selectattr('estado', 'equalto', 'Crítico')|list|length }}
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <h2 class="my-4">Lista de Reportes</h2>
+        <table class="table animate__animated animate__fadeIn">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Fecha de Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                {% for report in reports %}
+                <tr class="animate__animated animate__fadeIn">
+                    <td>{{ report.title }}</td>
+                    <td>{{ report.descripcion }}</td>
+                    <td>{{ report.estado }}</td>
+                    <td>{{ report.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('ver_detalle', id=report.id) }}" class="btn btn-info">Ver</a>
+                        <a href="{{ url_for('editar_reporte', id=report.id) }}" class="btn btn-warning">Editar</a>
+                        <form action="{{ url_for('borrar_reporte', id=report.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   <!-- Modal para crear un nuevo reporte -->
+<div class="modal fade" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createReportModalLabel"><i class="fas fa-plus-circle"></i> Crear Nuevo Reporte</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('create_report') }}" method="POST">
                     <div class="form-group">
-                        <label for="title">Título</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
+                        <label for="title" class="font-weight-bold">Título del Reporte</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Escribe el título del reporte" required>
                     </div>
                     <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                        <label for="descripcion" class="font-weight-bold">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente el reporte" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="estado">Estado</label>
+                        <label for="estado" class="font-weight-bold">Estado</label>
                         <select class="form-control" id="estado" name="estado" required>
-                            <option value="activo">Activo</option>
-                            <option value="medio">Medio</option>
-                            <option value="critico">Crítico</option>
+                            <option value="" disabled selected>Selecciona el estado del reporte</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Medio">Medio</option>
+                            <option value="Crítico">Crítico</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success">Crear Reporte</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Reporte</button>
+                    </div>
                 </form>
             </div>
         </div>
-
-        <h2>Reportes</h2>
-        <div class="card">
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Fecha de creación</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for reporte in reports %}
-                        <tr>
-                            <td>{{ reporte.title }}</td>
-                            <td>{{ reporte.descripcion }}</td>
-                            <td>
-                                {% if reporte.estado == 'Activo' %}
-                                    <span class="badge bg-success">Activo</span>
-                                {% elif reporte.estado == 'Medio' %}
-                                    <span class="badge bg-warning">Medio</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Crítico</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ reporte.created_at.strftime('%Y-%m-%d') }}</td>
-                            <td>
-                                <a href="{{ url_for('editar_reporte', id=reporte.id) }}" class="btn btn-primary btn-sm">Editar</a>
-                                <form action="{{ url_for('borrar_reporte', id=reporte.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="text-center mt-4">
-            <a href="{{ url_for('ver_reportes') }}" class="btn-view">Ver Todos los Reportes</a>
-        </div>
-        
     </div>
+</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Función para agregar animación a cada fila al cargar la tabla
+        $(document).ready(function() {
+            $('#reportTableBody tr').each(function(index) {
+                $(this).addClass('animate__fadeInUp');
+                $(this).css('animation-delay', `${index * 0.1}s`);
+            });
+        });
+    </script>
+
 </body>
 </html>
