@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard con Animación</title>
+    <title>Dashboard Reportes DGSP</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -112,7 +112,7 @@
                     <td>
                         <a href="{{ url_for('ver_detalle', id=report.id) }}" class="btn btn-info">Ver</a>
                         <a href="{{ url_for('editar_reporte', id=report.id) }}" class="btn btn-warning">Editar</a>
-                        <form action="{{ url_for('borrar_reporte', id=report.id) }}" method="POST" style="display:inline;">
+                        <form action="{{ url_for('eliminar_reporte', id=report.id) }}" method="POST" style="display:inline;">
                             <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
                     </td>

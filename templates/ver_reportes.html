@@ -7,22 +7,44 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f4f6f9;
+        }
+        .report-column, .chart-column {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .report-column {
+            border-right: 1px solid #ddd;
         }
         .card {
+            border: none;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
         .card:hover {
-            transform: scale(1.05);
+            transform: translateY(-10px);
         }
         .badge-success {
             background-color: #28a745;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 8px;
         }
         .badge-warning {
             background-color: #ffc107;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 8px;
         }
         .badge-danger {
             background-color: #dc3545;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 8px;
         }
         .btn-back {
             position: fixed;
@@ -30,68 +52,74 @@
             right: 20px;
             padding: 15px 25px;
             font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
             transition: transform 0.2s;
-            animation: pulse 1s infinite;
         }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+        .btn-back:hover {
+            background-color: #0056b3;
         }
         #myChart {
-            max-width: 600px;
-            margin: 30px auto;
+            width: 100% !important;
+            height: 80vh !important;
+            position: sticky;
+            top: 0;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Lista de Reportes</h1>
-
+    <div class="container-fluid">
         <div class="row">
-            {% if reports %}
-                {% for report in reports %}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ report.title }}</h5>
-                            <p class="card-text">{{ report.descripcion }}</p>
-                            <p class="card-text">
-                                <strong>Estado:</strong> 
-                                {% if report.estado == 'Activo' %}
-                                    <span class="badge badge-success">Activo</span>
-                                {% elif report.estado == 'Medio' %}
-                                    <span class="badge badge-warning">Medio</span>
-                                {% elif report.estado == 'Critico' %}
-                                    <span class="badge badge-danger">Crítico</span>
-                                {% else %}
-                                    <span class="badge badge-secondary">{{ report.estado }}</span>
-                                {% endif %}
-                            </p>
-                            <p class="card-text"><small class="text-muted">Fecha de Creación: {{ report.created_at.strftime('%Y-%m-%d') }}</small></p>
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ url_for('ver_detalle', id=report.id) }}" class="btn btn-info btn-sm">Ver</a>
-                                <a href="{{ url_for('editar_reporte', id=report.id) }}" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="{{ url_for('eliminar_reporte', id=report.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este reporte?');">Eliminar</a>
+            <!-- Columna de Reportes -->
+            <div class="col-md-6 report-column">
+                <h1 class="mb-4 text-center">Reportes en Cola</h1>
+                <div class="p-3">
+                    {% if reports %}
+                        {% for report in reports %}
+                        <div class="mb-4">
+                            <div class="card p-3 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">{{ report.title }}</h5>
+                                    <p class="card-text">{{ report.descripcion }}</p>
+                                    <p class="card-text">
+                                        <strong>Estado:</strong> 
+                                        {% if report.estado == 'Activo' %}
+                                            <span class="badge badge-success">Activo</span>
+                                        {% elif report.estado == 'Medio' %}
+                                            <span class="badge badge-warning">Medio</span>
+                                        {% elif report.estado == 'Crítico' %}
+                                            <span class="badge badge-danger">Crítico</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">{{ report.estado }}</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="card-text text-muted"><small>Creado el: {{ report.created_at.strftime('%Y-%m-%d') }}</small></p>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <a href="{{ url_for('ver_detalle', id=report.id) }}" class="btn btn-info btn-sm">Ver</a>
+                                        <a href="{{ url_for('editar_reporte', id=report.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                        <a href="{{ url_for('eliminar_reporte', id=report.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este reporte?');">Eliminar</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center">No hay reportes disponibles.</p>
+                    {% endif %}
                 </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay reportes disponibles.</p>
-            {% endif %}
+            </div>
+
+            <!-- Columna de Gráfica -->
+            <div class="col-md-6 chart-column">
+                <h1 class="mb-4 text-center">Estado de los Reportes</h1>
+                <canvas id="myChart"></canvas>
+            </div>
         </div>
 
-        <canvas id="myChart"></canvas>
-
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-back">Regresar al Dashboard</a>
+        <a href="{{ url_for('dashboard') }}" class="btn-back">Regresar al Dashboard</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -99,7 +127,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Datos de ejemplo, deberías reemplazar esto con datos reales de tus reportes
+        // Datos de ejemplo, reemplazar con datos reales
         const reportData = {
             labels: ['Activo', 'Medio', 'Crítico'],
             datasets: [{
@@ -107,7 +135,7 @@
                 data: [
                     {{ reports | selectattr('estado', 'equalto', 'Activo') | list | length }},
                     {{ reports | selectattr('estado', 'equalto', 'Medio') | list | length }},
-                    {{ reports | selectattr('estado', 'equalto', 'Critico') | list | length }}
+                    {{ reports | selectattr('estado', 'equalto', 'Crítico') | list | length }}
                 ],
                 backgroundColor: [
                     'rgba(40, 167, 69, 0.5)',
@@ -128,6 +156,7 @@
             data: reportData,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -141,9 +170,5 @@
             config
         );
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </body>
-
-
 </html>

@@ -1,9 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-from datetime import datetime
-
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -25,6 +23,29 @@ class Report(db.Model):
     descripcion = db.Column(db.Text, nullable=False)
     estado = db.Column(db.String(20), nullable=False)  # Activo, Medio, Crítico
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+# Función para actualizar el estado de los reportes
+def actualizar_estado_reportes():
+    now = datetime.utcnow()
+    two_days_ago = now - timedelta(days=2)
+    one_day_ago = now - timedelta(days=1)
+    
+    # Obtener todos los reportes
+    reportes = Report.query.all()
+
+    for reporte in reportes:
+        # Si el reporte tiene más de 2 días, se elimina
+        if reporte.created_at < two_days_ago:
+            db.session.delete(reporte)
+        # Si el reporte tiene entre 1 y 2 días, su estado cambia a "Crítico"
+        elif reporte.created_at < one_day_ago:
+            reporte.estado = "Crítico"
+        # Si el reporte tiene menos de 1 día, su estado cambia a "Medio"
+        else:
+            reporte.estado = "Medio"
+    
+    # Aplicar los cambios a la base de datos
+    db.session.commit()
 
 # Página principal
 @app.route('/')
@@ -68,39 +89,37 @@ def dashboard():
     reports = Report.query.all()
     return render_template('dashboard.html', reports=reports)
 
-
 # Crear un nuevo reporte
 @app.route('/create_report', methods=['POST'])
 def create_report():
     title = request.form.get('title')
-    descripcion = request.form.get('descripcion')  # asegúrate de tener este campo en tu formulario
-    estado = request.form.get('estado')  # Recibe el valor del estado desde el formulario
+    descripcion = request.form.get('descripcion')
+    estado = request.form.get('estado')
 
     if not title or not descripcion or not estado:
         flash('Todos los campos son requeridos.', 'danger')
         return redirect(url_for('dashboard'))
 
-    # Crear el nuevo reporte con los datos recibidos
     new_report = Report(title=title, descripcion=descripcion, estado=estado)
-
-    # Agregar el nuevo reporte a la base de datos
     db.session.add(new_report)
     db.session.commit()
 
     flash('Reporte creado exitosamente', 'success')
     return redirect(url_for('dashboard'))
 
-
 # Ver todos los reportes
 @app.route('/reportes')
 def ver_reportes():
+    # Actualizar el estado de los reportes y eliminar los que pasen los dos días
+    actualizar_estado_reportes()
+
     reportes = Report.query.all()
     return render_template('ver_reportes.html', reports=reportes)
 
 # Editar un reporte
 @app.route('/report/update/<int:id>', methods=['GET', 'POST'])
 def editar_reporte(id):
-    reporte = Report.query.get_or_404(id)  # Obtener el reporte
+    reporte = Report.query.get_or_404(id)
 
     if request.method == 'POST':
         titulo = request.form.get('titulo')
@@ -111,7 +130,6 @@ def editar_reporte(id):
             flash('Todos los campos son obligatorios.', 'danger')
             return redirect(request.url)
 
-        # Actualizamos los valores del reporte
         reporte.title = titulo
         reporte.descripcion = descripcion
         reporte.estado = estado
@@ -120,48 +138,26 @@ def editar_reporte(id):
         flash('Reporte actualizado con éxito', 'success')
         return redirect(url_for('ver_reportes'))
 
-    return render_template('editar_reporte.html', reporte=reporte)  # Pasamos "reporte" a la plantilla
+    return render_template('editar_reporte.html', reporte=reporte)
 
-
+# Ver el detalle de un reporte
 @app.route('/report/<int:id>', methods=['GET'])
 def ver_detalle(id):
-    reporte = Report.query.get_or_404(id)  # Obtener el reporte
-    return render_template('detalle_reporte.html', reporte=reporte)  # Asegúrate de pasar "reporte"
-
-    
-    # Renderizar una plantilla para mostrar los detalles del reporte
+    reporte = Report.query.get_or_404(id)
     return render_template('detalle_reporte.html', reporte=reporte)
-
-
-
 
 # Borrar un reporte
 @app.route('/report/delete/<int:id>', methods=['POST'])
-def borrar_reporte(id):
+def eliminar_reporte(id):
     reporte = Report.query.get_or_404(id)
+
     db.session.delete(reporte)
     db.session.commit()
     flash('Reporte eliminado con éxito', 'success')
-    return redirect(url_for('dashboard'))
-
-@app.route('/report/delete/<int:id>', methods=['POST'])
-def eliminar_reporte(id):
-    # Obtener el reporte por ID
-    reporte = Report.query.get_or_404(id)
-    
-    try:
-        # Eliminar el reporte de la base de datos
-        db.session.delete(reporte)
-        db.session.commit()
-        flash('Reporte eliminado con éxito', 'success')
-    except Exception as e:
-        flash(f'Error al eliminar el reporte: {str(e)}', 'danger')
-    
     return redirect(url_for('ver_reportes'))
-
 
 # Inicializar la base de datos y ejecutar la aplicación
 if __name__ == '__main__':
     with app.app_context():
-      db.create_all()  # Crea las tablas si no existen
+        db.create_all()
     app.run(debug=True)
