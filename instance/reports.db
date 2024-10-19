@@ -15,3 +15,7 @@ CREATE TABLE IF NOT EXISTS reports (
     estado VARCHAR(20) NOT NULL,  -- Activo, Medio, Crítico
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+#CREATE TABLE IF EXISTS 'centros'
+  id INT autoincrement PRIMARY KEY,
+  
