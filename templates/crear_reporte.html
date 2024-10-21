@@ -19,11 +19,12 @@
                 <textarea name="descripcion" class="form-control" rows="5" required></textarea>
             </div>
             <div class="form-group">
-                <label for="estado">Estado</label> <!-- Cambiado de "prioridad" a "estado" -->
-                <select name="estado" class="form-control">
-                    <option value="Nuevo">Baja</option>
-                    <option value="Medio">Media</option>
-                    <option value="Crítico">Alta</option>
+                <label for="estado" class="font-weight-bold">Estado</label>
+                <select class="form-control" id="estado" name="estado" required>
+                    <option value="" disabled selected>Selecciona el estado del reporte</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Medio">Medio</option>
+                    <option value="Crítico">Crítico</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Enviar Reporte</button>
