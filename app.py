@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, flash, session, request
+from flask import Flask, render_template, redirect, url_for, flash, session, request 
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import pymysql
-from flask_login import current_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_login import UserMixin
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -12,8 +13,12 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/dash_reports'
 db = SQLAlchemy(app)
 
+# Inicializar LoginManager
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # Redirige a login si no está autenticado
+
 # Modelo de usuario
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
@@ -25,6 +30,14 @@ class Report(db.Model):
     descripcion = db.Column(db.Text, nullable=False)
     estado = db.Column(db.String(20), nullable=False)  # Activo, Medio, Crítico
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Cambiar a 'user'
+
+    # Relación con la tabla User
+    usuario = db.relationship('User', backref='reportes', lazy=True)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Función para actualizar el estado de los reportes
 def actualizar_estado_reportes():
@@ -62,7 +75,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
+            login_user(user)
             flash('Inicio de sesión exitoso', 'success')
             return redirect(url_for('dashboard'))
         else:
@@ -87,12 +100,14 @@ def register():
 
 # Ruta del dashboard
 @app.route('/dashboard')
+@login_required  # Proteger la ruta con autenticación
 def dashboard():
     reports = Report.query.all()
     return render_template('dashboard.html', reports=reports)
 
 # Crear un nuevo reporte
 @app.route('/create_report', methods=['POST'])
+@login_required  # Proteger la ruta con autenticación
 def create_report():
     title = request.form.get('title')
     descripcion = request.form.get('descripcion')
@@ -102,7 +117,12 @@ def create_report():
         flash('Todos los campos son requeridos.', 'danger')
         return redirect(url_for('dashboard'))
 
-    new_report = Report(title=title, descripcion=descripcion, estado=estado)
+    # Verificar que el usuario actual existe
+    if not User.query.get(current_user.id):
+        flash('Usuario no encontrado. No se puede crear el reporte.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    new_report = Report(title=title, descripcion=descripcion, estado=estado, usuario_id=current_user.id)
     db.session.add(new_report)
     db.session.commit()
 
@@ -111,6 +131,7 @@ def create_report():
 
 # Ver todos los reportes
 @app.route('/reportes')
+@login_required  # Proteger la ruta con autenticación
 def ver_reportes():
     # Actualizar el estado de los reportes y eliminar los que pasen los dos días
     actualizar_estado_reportes()
@@ -120,6 +141,7 @@ def ver_reportes():
 
 # Editar un reporte
 @app.route('/report/update/<int:id>', methods=['GET', 'POST'])
+@login_required  # Proteger la ruta con autenticación
 def editar_reporte(id):
     reporte = Report.query.get_or_404(id)
 
@@ -144,12 +166,14 @@ def editar_reporte(id):
 
 # Ver el detalle de un reporte
 @app.route('/report/<int:id>', methods=['GET'])
+@login_required  # Proteger la ruta con autenticación
 def ver_detalle(id):
     reporte = Report.query.get_or_404(id)
     return render_template('detalle_reporte.html', reporte=reporte)
 
 # Borrar un reporte
 @app.route('/report/delete/<int:id>', methods=['POST'])
+@login_required  # Proteger la ruta con autenticación
 def eliminar_reporte(id):
     reporte = Report.query.get_or_404(id)
 
@@ -160,55 +184,34 @@ def eliminar_reporte(id):
 
 # --- Sección adicional: Rutas para creación y visualización de reportes de usuarios ---
 
-# Conexión a la base de datos para reportes de usuarios (pymysql)
-def obtener_conexion():
-    return pymysql.connect(host='localhost',
-                           user='root',
-                           password='',
-                           db='dash_reports')
-
 # Ruta para el formulario de creación de reportes (usuarios)
 @app.route('/crear_reporte', methods=['GET', 'POST'])
+@login_required  # Proteger la ruta con autenticación
 def crear_reporte_usuario():
     if request.method == 'POST':
         titulo = request.form['titulo']
         descripcion = request.form['descripcion']
-        estado = request.form['estado']  # Anteriormente "prioridad", ahora "estado" en tu DB
-        usuario_id = current_user.id  # ID del usuario actual (asegúrate de que current_user esté disponible)
+        estado = request.form['estado']  # El estado del reporte
+        usuario_id = current_user.id  # ID del usuario actual
 
-        conexion = obtener_conexion()
-        with conexion.cursor() as cursor:
-            # Insertar el reporte con el campo "usuario_id" y "creado_por" = 'Usuario'
-            cursor.execute("""
-                INSERT INTO reportes (titulo, descripcion, estado, creado_por, usuario_id)
-                VALUES (%s, %s, %s, 'Usuario', %s)
-            """, (titulo, descripcion, estado, usuario_id))
-            conexion.commit()
-        conexion.close()
+        new_report = Report(title=titulo, descripcion=descripcion, estado=estado, usuario_id=usuario_id)
+        db.session.add(new_report)
+        db.session.commit()
 
         flash("¡Reporte enviado correctamente!", "success")
         return redirect(url_for('crear_reporte_usuario'))
     
     return render_template('crear_reporte.html')
 
-# Ruta para ver reportes (solo admin)
+# Ruta para ver los reportes creados por los usuarios
 @app.route('/ver_reportes_usuario')
+@login_required  # Proteger la ruta con autenticación
 def ver_reportes_usuario():
-    conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        # Seleccionar todos los reportes creados por usuarios
-        cursor.execute("""
-            SELECT r.id, r.titulo, r.descripcion, r.estado, r.fecha_creacion, u.username 
-            FROM reportes r 
-            LEFT JOIN usuarios u ON r.usuario_id = u.id
-            WHERE r.creado_por = 'Usuario'
-        """)
-        reportes = cursor.fetchall()
-    conexion.close()
+    reportes = Report.query.filter_by(usuario_id=current_user.id).all()
     return render_template('ver_reportes.html', reportes=reportes)
 
 # Inicializar la base de datos y ejecutar la aplicación
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        db.create_all()  # Esto creará todas las tablas si no existen
     app.run(debug=True)

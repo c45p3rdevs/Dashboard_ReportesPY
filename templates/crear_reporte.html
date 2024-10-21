@@ -1,9 +1,3 @@
-2. Frontend del Usuario (Formulario de Creación de Reportes)
-crear_reporte.html
-Esta página permite que un usuario envíe su reporte:
-
-html
-Copiar código
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,8 +19,8 @@ Copiar código
                 <textarea name="descripcion" class="form-control" rows="5" required></textarea>
             </div>
             <div class="form-group">
-                <label for="prioridad">Prioridad</label>
-                <select name="prioridad" class="form-control">
+                <label for="estado">Estado</label> <!-- Cambiado de "prioridad" a "estado" -->
+                <select name="estado" class="form-control">
                     <option value="Nuevo">Baja</option>
                     <option value="Medio">Media</option>
                     <option value="Crítico">Alta</option>
@@ -36,4 +30,4 @@ Copiar código
         </form>
     </div>
 </body>
-</html> 
+</html>
