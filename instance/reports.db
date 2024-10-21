@@ -16,6 +16,11 @@ CREATE TABLE IF NOT EXISTS reports (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-#CREATE TABLE IF EXISTS 'centros'
-  id INT autoincrement PRIMARY KEY,
+-- Agregar columnas faltantes a la tabla de reportes
+ALTER TABLE report ADD COLUMN creado_por ENUM('Usuario', 'Administrador') DEFAULT 'Usuario';
+ALTER TABLE report ADD COLUMN usuario_id INT;
+
+-- Agregar la relación de llave foránea si tienes la tabla usuarios
+ALTER TABLE report ADD CONSTRAINT fk_usuario_id FOREIGN KEY (usuario_id) REFERENCES users(id);
+
   

@@ -2,11 +2,13 @@ from flask import Flask, render_template, redirect, url_for, flash, session, req
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+import pymysql
+from flask_login import current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-# Configuración de MySQL
+# Configuración de MySQL para SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/dash_reports'
 db = SQLAlchemy(app)
 
@@ -155,6 +157,55 @@ def eliminar_reporte(id):
     db.session.commit()
     flash('Reporte eliminado con éxito', 'success')
     return redirect(url_for('ver_reportes'))
+
+# --- Sección adicional: Rutas para creación y visualización de reportes de usuarios ---
+
+# Conexión a la base de datos para reportes de usuarios (pymysql)
+def obtener_conexion():
+    return pymysql.connect(host='localhost',
+                           user='root',
+                           password='',
+                           db='dash_reports')
+
+# Ruta para el formulario de creación de reportes (usuarios)
+@app.route('/crear_reporte', methods=['GET', 'POST'])
+def crear_reporte_usuario():
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        descripcion = request.form['descripcion']
+        estado = request.form['estado']  # Anteriormente "prioridad", ahora "estado" en tu DB
+        usuario_id = current_user.id  # ID del usuario actual (asegúrate de que current_user esté disponible)
+
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            # Insertar el reporte con el campo "usuario_id" y "creado_por" = 'Usuario'
+            cursor.execute("""
+                INSERT INTO reportes (titulo, descripcion, estado, creado_por, usuario_id)
+                VALUES (%s, %s, %s, 'Usuario', %s)
+            """, (titulo, descripcion, estado, usuario_id))
+            conexion.commit()
+        conexion.close()
+
+        flash("¡Reporte enviado correctamente!", "success")
+        return redirect(url_for('crear_reporte_usuario'))
+    
+    return render_template('crear_reporte.html')
+
+# Ruta para ver reportes (solo admin)
+@app.route('/ver_reportes_usuario')
+def ver_reportes_usuario():
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        # Seleccionar todos los reportes creados por usuarios
+        cursor.execute("""
+            SELECT r.id, r.titulo, r.descripcion, r.estado, r.fecha_creacion, u.username 
+            FROM reportes r 
+            LEFT JOIN usuarios u ON r.usuario_id = u.id
+            WHERE r.creado_por = 'Usuario'
+        """)
+        reportes = cursor.fetchall()
+    conexion.close()
+    return render_template('ver_reportes.html', reportes=reportes)
 
 # Inicializar la base de datos y ejecutar la aplicación
 if __name__ == '__main__':
