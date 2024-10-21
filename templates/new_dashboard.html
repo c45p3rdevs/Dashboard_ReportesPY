@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #343a40;
+        }
+
+        .report-card {
+            border-left: 10px solid;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card.active {
+            border-color: #28a745;
+            background-color: #e9f7ef;
+        }
+
+        .report-card.medium {
+            border-color: #ffc107;
+            background-color: #fff9e6;
+        }
+
+        .report-card.critical {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .report-card h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .report-card p {
+            margin: 0;
+            color: #555;
+        }
+
+        .btn {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Dashboard - Report Status</h1>
+    </div>
+    <div class="container">
+        <h1>Your Reports</h1>
+        
+        <!-- Example Report Cards -->
+        {% for report in reports %}
+            <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                <h2>{{ report.title }}</h2>
+                <p>{{ report.descripcion }}</p>
+                <p><strong>Status:</strong> {{ report.estado }}</p>
+                <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+        {% endfor %}
+
+        <a href="{{ url_for('crear_reporte_usuario') }}" class="btn">Create New Report</a>
+    </div>
+</body>
+</html>

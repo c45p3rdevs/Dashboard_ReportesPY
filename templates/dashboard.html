@@ -20,6 +20,10 @@
             <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReportModal">
                 <i class="fas fa-plus"></i> Crear Nuevo Reporte
             </button>
+            <!-- Botón para redirigir a new_dashboard.html -->
+            <a href="{{ url_for('new_dashboard') }}" class="btn btn-secondary mb-3">
+                <i class="fas fa-chart-line"></i> Ver Nuevo Dashboard
+            </a>
         </div>
 
         <div class="row">
@@ -122,44 +126,44 @@
         </table>
     </div>
 
-   <!-- Modal para crear un nuevo reporte -->
-<div class="modal fade" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="createReportModalLabel"><i class="fas fa-plus-circle"></i> Crear Nuevo Reporte</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ url_for('create_report') }}" method="POST">
-                    <div class="form-group">
-                        <label for="title" class="font-weight-bold">Título del Reporte</label>
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Escribe el título del reporte" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion" class="font-weight-bold">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente el reporte" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="estado" class="font-weight-bold">Estado</label>
-                        <select class="form-control" id="estado" name="estado" required>
-                            <option value="" disabled selected>Selecciona el estado del reporte</option>
-                            <option value="Activo">Activo</option>
-                            <option value="Medio">Medio</option>
-                            <option value="Crítico">Crítico</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Reporte</button>
-                    </div>
-                </form>
+    <!-- Modal para crear un nuevo reporte -->
+    <div class="modal fade" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="createReportModalLabel"><i class="fas fa-plus-circle"></i> Crear Nuevo Reporte</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('create_report') }}" method="POST">
+                        <div class="form-group">
+                            <label for="title" class="font-weight-bold">Título del Reporte</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Escribe el título del reporte" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcion" class="font-weight-bold">Descripción</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente el reporte" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="estado" class="font-weight-bold">Estado</label>
+                            <select class="form-control" id="estado" name="estado" required>
+                                <option value="" disabled selected>Selecciona el estado del reporte</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Medio">Medio</option>
+                                <option value="Crítico">Crítico</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Reporte</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

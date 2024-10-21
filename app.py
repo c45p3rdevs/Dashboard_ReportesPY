@@ -105,6 +105,13 @@ def dashboard():
     reports = Report.query.all()
     return render_template('dashboard.html', reports=reports)
 
+# Nueva ruta para el new_dashboard
+@app.route('/new_dashboard')
+@login_required  # Proteger la ruta con autenticación
+def new_dashboard():
+    reports = Report.query.all()
+    return render_template('new_dashboard.html', reports=reports)
+
 # Crear un nuevo reporte
 @app.route('/create_report', methods=['POST'])
 @login_required  # Proteger la ruta con autenticación
