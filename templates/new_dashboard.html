@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Dashboard</title>
+    <title>Dashboard por Centro</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,16 +21,28 @@
         }
 
         .container {
-            width: 80%;
+            width: 95%;
             margin: 20px auto;
+        }
+
+        .centro-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .centro-column {
+            width: 30%;
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
-        h1 {
+        .centro-column h2 {
             color: #343a40;
+            text-align: center;
         }
 
         .report-card {
@@ -56,9 +68,9 @@
             background-color: #f8d7da;
         }
 
-        .report-card h2 {
+        .report-card h3 {
             margin: 0 0 10px;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .report-card p {
@@ -79,26 +91,155 @@
         .btn:hover {
             background-color: #495057;
         }
+
+        .create-report {
+            text-align: center;
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Dashboard - Report Status</h1>
+        <h1>Dashboard - Reportes por Centro</h1>
     </div>
-    <div class="container">
-        <h1>Your Reports</h1>
-        
-        <!-- Example Report Cards -->
-        {% for report in reports %}
-            <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
-                <h2>{{ report.title }}</h2>
-                <p>{{ report.descripcion }}</p>
-                <p><strong>Status:</strong> {{ report.estado }}</p>
-                <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-            </div>
-        {% endfor %}
 
-        <a href="{{ url_for('crear_reporte_usuario') }}" class="btn">Create New Report</a>
+    <div class="container">
+        <div class="create-report">
+            <a href="/crear_reporte" class="btn">Crear Reporte</a>
+        </div>
+
+        <div class="centro-container">
+            
+            <!-- Acámbaro Column -->
+            <div class="centro-column">
+                <h2>Acámbaro</h2>
+                {% for report in reports if report.centro == 'Acámbaro' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Celaya Column -->
+            <div class="centro-column">
+                <h2>Celaya</h2>
+                {% for report in reports if report.centro == 'Celaya' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Guanajuato Column -->
+            <div class="centro-column">
+                <h2>Guanajuato</h2>
+                {% for report in reports if report.centro == 'Guanajuato' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Irapuato Column -->
+            <div class="centro-column">
+                <h2>Irapuato</h2>
+                {% for report in reports if report.centro == 'Irapuato' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- León Column -->
+            <div class="centro-column">
+                <h2>León</h2>
+                {% for report in reports if report.centro == 'León' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pénjamo Column -->
+            <div class="centro-column">
+                <h2>Pénjamo</h2>
+                {% for report in reports if report.centro == 'Pénjamo' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Salamanca Column -->
+            <div class="centro-column">
+                <h2>Salamanca</h2>
+                {% for report in reports if report.centro == 'Salamanca' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- San Felipe Column -->
+            <div class="centro-column">
+                <h2>San Felipe</h2>
+                {% for report in reports if report.centro == 'San Felipe' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- San Miguel Column -->
+            <div class="centro-column">
+                <h2>San Miguel</h2>
+                {% for report in reports if report.centro == 'San Miguel' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Silao Column -->
+            <div class="centro-column">
+                <h2>Silao</h2>
+                {% for report in reports if report.centro == 'Silao' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </body>
 </html>
