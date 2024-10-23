@@ -113,7 +113,7 @@
             <!-- Acámbaro Column -->
             <div class="centro-column">
                 <h2>Acámbaro</h2>
-                {% for report in reports if report.centro == 'Acámbaro' %}
+                {% for report in reports if report.municipio == 'Acámbaro' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -126,7 +126,7 @@
             <!-- Celaya Column -->
             <div class="centro-column">
                 <h2>Celaya</h2>
-                {% for report in reports if report.centro == 'Celaya' %}
+                {% for report in reports if report.municipio == 'Celaya' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -139,7 +139,7 @@
             <!-- Guanajuato Column -->
             <div class="centro-column">
                 <h2>Guanajuato</h2>
-                {% for report in reports if report.centro == 'Guanajuato' %}
+                {% for report in reports if report.municipio == 'Guanajuato' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -152,7 +152,7 @@
             <!-- Irapuato Column -->
             <div class="centro-column">
                 <h2>Irapuato</h2>
-                {% for report in reports if report.centro == 'Irapuato' %}
+                {% for report in reports if report.municipio == 'Irapuato' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -165,7 +165,7 @@
             <!-- León Column -->
             <div class="centro-column">
                 <h2>León</h2>
-                {% for report in reports if report.centro == 'León' %}
+                {% for report in reports if report.municipio == 'León' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -178,7 +178,7 @@
             <!-- Pénjamo Column -->
             <div class="centro-column">
                 <h2>Pénjamo</h2>
-                {% for report in reports if report.centro == 'Pénjamo' %}
+                {% for report in reports if report.municipio == 'Pénjamo' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -191,7 +191,7 @@
             <!-- Salamanca Column -->
             <div class="centro-column">
                 <h2>Salamanca</h2>
-                {% for report in reports if report.centro == 'Salamanca' %}
+                {% for report in reports if report.municipio == 'Salamanca' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -204,7 +204,7 @@
             <!-- San Felipe Column -->
             <div class="centro-column">
                 <h2>San Felipe</h2>
-                {% for report in reports if report.centro == 'San Felipe' %}
+                {% for report in reports if report.municipio == 'San Felipe' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -217,7 +217,7 @@
             <!-- San Miguel Column -->
             <div class="centro-column">
                 <h2>San Miguel</h2>
-                {% for report in reports if report.centro == 'San Miguel' %}
+                {% for report in reports if report.municipio == 'San Miguel' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -229,8 +229,8 @@
 
             <!-- Silao Column -->
             <div class="centro-column">
-                <h2>Silao</h2>
-                {% for report in reports if report.centro == 'Silao' %}
+                <h2>Valle F</h2>
+                {% for report in reports if report.municipio == 'Valle F' %}
                     <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
                         <h3>{{ report.title }}</h3>
                         <p>{{ report.descripcion }}</p>
@@ -239,6 +239,18 @@
                     </div>
                 {% endfor %}
             </div>
+            <div class="centro-column">
+                <h2>Valle V</h2>
+                {% for report in reports if report.municipio == 'Valle V' %}
+                    <div class="report-card {% if report.estado == 'Activo' %}active{% elif report.estado == 'Medio' %}medium{% elif report.estado == 'Crítico' %}critical{% endif %}">
+                        <h3>{{ report.title }}</h3>
+                        <p>{{ report.descripcion }}</p>
+                        <p><strong>Status:</strong> {{ report.estado }}</p>
+                        <p><strong>Created At:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
         </div>
     </div>
 </body>

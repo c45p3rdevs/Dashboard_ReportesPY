@@ -11,42 +11,43 @@
         <h1 class="mt-4">Crear un Reporte</h1>
         <form action="{{ url_for('crear_reporte_usuario') }}" method="POST">
             <div class="form-group">
-                <label for="titulo">Título del Reporte</label>
-                <input type="text" name="titulo" class="form-control" id="titulo" required>
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" class="form-control" required>
             </div>
+
             <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea name="descripcion" class="form-control" id="descripcion" rows="5" required></textarea>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" required></textarea>
             </div>
+
             <div class="form-group">
-                <label for="estado" class="font-weight-bold">Estado</label>
-                <select class="form-control" id="estado" name="estado" required>
-                    <option value="" disabled selected>Selecciona el estado del reporte</option>
+                <label for="municipio">Centro:</label>
+                <select id="municipio" name="municipio" class="form-control" required>
+                    <option value="Acámbaro">Acámbaro</option>
+                    <option value="Celaya">Celaya</option>
+                    <option value="Guanajuato">Guanajuato</option>
+                    <option value="Irapuato">Irapuato</option>
+                    <option value="León">León</option>
+                    <option value="Pénjamo">Pénjamo</option>
+                    <option value="Salamanca">Salamanca</option>
+                    <option value="San Felipe">San Felipe</option>
+                    <option value="San Miguel">San Miguel</option>
+                    <option value="Valle F">Valle F</option>
+                    <option value="Valle V">Valle V</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control" required>
                     <option value="Activo">Activo</option>
                     <option value="Medio">Medio</option>
                     <option value="Crítico">Crítico</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="centro" class="font-weight-bold">Centro</label>
-                <select class="form-control" id="centro" name="centro" required>
-                    <option value="" disabled selected>Selecciona el centro o municipio</option>
-                    <option value="Centro 1">Acambaro</option>
-                    <option value="Centro 2">Celaya</option>
-                    <option value="Centro 3">Guanajuato</option>
-                    <option value="Centro 4">Irapuato</option>
-                    <option value="Centro 5">Leon</option>
-                    <option value="Centro 6">Penjamo</option>
-                    <option value="Centro 7">Salamanca</option>
-                    <option value="Centro 8">San Felipe</option>
-                    <option value="Centro 9">San Miguel</option>
-                    <option value="Centro 10">Valle F</option>
-                    <option value="Centro 11">Valle V</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+
+            <input type="submit" class="btn btn-primary" value="Crear Reporte">
         </form>
     </div>
 </body>
 </html>
-

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes por Municipio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .estado-verde {
+            background-color: #d4edda;
+        }
+        .estado-amarillo {
+            background-color: #fff3cd;
+        }
+        .estado-rojo {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Reportes para el Municipio: {{ municipio }}</h1>
+
+        <!-- Lista de reportes -->
+        <div class="row">
+            {% for reporte in reportes %}
+                <div class="col-md-4">
+                    <div class="card {% if reporte.estado == 'Activo' %}estado-verde{% elif reporte.estado == 'Medio' %}estado-amarillo{% elif reporte.estado == 'Crítico' %}estado-rojo{% endif %}">
+                        <div class="card-header">
+                            {{ reporte.title }}
+                        </div>
+                        <div class="card-body">
+                            <p>{{ reporte.descripcion }}</p>
+                            <p><strong>Estado:</strong> {{ reporte.estado }}</p>
+                            <p><strong>Fecha de Creación:</strong> {{ reporte.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        <div class="card-footer text-right">
+                            <a href="{{ url_for('ver_detalle', id=reporte.id) }}" class="btn btn-primary btn-sm">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center">No hay reportes para este municipio.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Botón de regreso -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Regresar al Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

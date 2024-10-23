@@ -31,6 +31,7 @@ class Report(db.Model):
     estado = db.Column(db.String(20), nullable=False)  # Activo, Medio, Crítico
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     usuario_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Cambiar a 'user'
+    municipio = db.Column(db.String(100), nullable=False)  # Nuevo campo para el municipio
 
     # Relación con la tabla User
     usuario = db.relationship('User', backref='reportes', lazy=True)
@@ -116,11 +117,12 @@ def new_dashboard():
 @app.route('/create_report', methods=['POST'])
 @login_required  # Proteger la ruta con autenticación
 def create_report():
-    title = request.form.get('title')
+    title = request.form.get('titulo')  # Cambiado a 'titulo' para que coincida con el formulario
     descripcion = request.form.get('descripcion')
     estado = request.form.get('estado')
+    municipio = request.form.get('municipio')
 
-    if not title or not descripcion or not estado:
+    if not title or not descripcion or not estado or not municipio:
         flash('Todos los campos son requeridos.', 'danger')
         return redirect(url_for('dashboard'))
 
@@ -129,7 +131,7 @@ def create_report():
         flash('Usuario no encontrado. No se puede crear el reporte.', 'danger')
         return redirect(url_for('dashboard'))
 
-    new_report = Report(title=title, descripcion=descripcion, estado=estado, usuario_id=current_user.id)
+    new_report = Report(title=title, descripcion=descripcion, estado=estado, municipio=municipio, usuario_id=current_user.id)
     db.session.add(new_report)
     db.session.commit()
 
@@ -156,14 +158,16 @@ def editar_reporte(id):
         titulo = request.form.get('titulo')
         descripcion = request.form.get('descripcion')
         estado = request.form.get('estado')
+        municipio = request.form.get('municipio')
 
-        if not titulo or not descripcion or not estado:
+        if not titulo or not descripcion or not estado or not municipio:
             flash('Todos los campos son obligatorios.', 'danger')
             return redirect(request.url)
 
         reporte.title = titulo
         reporte.descripcion = descripcion
         reporte.estado = estado
+        reporte.municipio = municipio
 
         db.session.commit()
         flash('Reporte actualizado con éxito', 'success')
@@ -189,26 +193,34 @@ def eliminar_reporte(id):
     flash('Reporte eliminado con éxito', 'success')
     return redirect(url_for('ver_reportes'))
 
-# --- Sección adicional: Rutas para creación y visualización de reportes de usuarios ---
+# --- Sección adicional: Rutas para creación y visualización de reportes de usuarios --- 
 
 # Ruta para el formulario de creación de reportes (usuarios)
+# Crear un nuevo reporte
 @app.route('/crear_reporte', methods=['GET', 'POST'])
 @login_required  # Proteger la ruta con autenticación
 def crear_reporte_usuario():
     if request.method == 'POST':
-        titulo = request.form['titulo']
-        descripcion = request.form['descripcion']
-        estado = request.form['estado']  # El estado del reporte
+        titulo = request.form.get('titulo')
+        descripcion = request.form.get('descripcion')
+        estado = request.form.get('estado')
+        municipio = request.form.get('municipio')
         usuario_id = current_user.id  # ID del usuario actual
 
-        new_report = Report(title=titulo, descripcion=descripcion, estado=estado, usuario_id=usuario_id)
+        # Verificar que todos los campos son válidos
+        if not titulo or not descripcion or not estado or not municipio:
+            flash('Todos los campos son requeridos.', 'danger')
+            return redirect(url_for('crear_reporte_usuario'))
+
+        new_report = Report(title=titulo, descripcion=descripcion, estado=estado, municipio=municipio, usuario_id=usuario_id)
         db.session.add(new_report)
         db.session.commit()
 
         flash("¡Reporte enviado correctamente!", "success")
         return redirect(url_for('crear_reporte_usuario'))
-    
+
     return render_template('crear_reporte.html')
+
 
 # Ruta para ver los reportes creados por los usuarios
 @app.route('/ver_reportes_usuario')
@@ -217,8 +229,16 @@ def ver_reportes_usuario():
     reportes = Report.query.filter_by(usuario_id=current_user.id).all()
     return render_template('ver_reportes.html', reportes=reportes)
 
+# --- Nueva ruta para el reporte por municipio ---
+@app.route('/reportes_municipio/<string:municipio>')
+@login_required  # Proteger la ruta con autenticación
+def reportes_por_municipio(municipio):
+    # Filtrar reportes por el municipio proporcionado
+    reportes = Report.query.filter_by(municipio=municipio).all()
+    return render_template('reportes_municipio.html', reportes=reportes, municipio=municipio)
+
 # Inicializar la base de datos y ejecutar la aplicación
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Esto creará todas las tablas si no existen
+        db.create_all()  # Crea las tablas si no existen
     app.run(debug=True)
