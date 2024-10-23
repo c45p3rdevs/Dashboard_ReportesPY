@@ -13,53 +13,55 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background-color: #f0f0f0;
             font-family: 'Arial', sans-serif;
         }
         .login-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             padding: 40px;
             max-width: 400px;
             width: 100%;
+            text-align: center;
         }
         .login-container h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 600;
             color: #333;
+            margin-bottom: 20px;
         }
         .form-control {
-            border-radius: 30px;
-            padding: 10px 20px;
+            border-radius: 25px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
         .btn-custom {
-            border-radius: 30px;
-            padding: 10px;
-            background-color: #9b59b6;
+            background-color: #3498db;
             border: none;
             color: white;
+            padding: 12px;
+            border-radius: 25px;
             width: 100%;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
         .btn-custom:hover {
-            background-color: #8e44ad;
-        }
-        .form-group label {
-            font-weight: bold;
-            color: #555;
+            background-color: #2980b9;
         }
         .extra-links {
-            text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .extra-links a {
             color: #3498db;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
         }
         .extra-links a:hover {
             text-decoration: underline;
@@ -85,11 +87,9 @@
         <h1>Iniciar Sesión</h1>
         <form method="POST">
             <div class="form-group">
-                <label for="username">Nombre de usuario:</label>
                 <input type="text" name="username" class="form-control" id="username" placeholder="Introduce tu usuario" required>
             </div>
             <div class="form-group">
-                <label for="password">Contraseña:</label>
                 <input type="password" name="password" class="form-control" id="password" placeholder="Introduce tu contraseña" required>
             </div>
             <button type="submit" class="btn btn-custom">Iniciar Sesión</button>
