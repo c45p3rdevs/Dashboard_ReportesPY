@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, session, request 
+from flask import Flask, render_template, redirect, url_for, flash, session, request,  jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -12,6 +12,27 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 # Configuración de MySQL para SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/dash_reports'
 db = SQLAlchemy(app)
+
+
+# Base de respuestas automáticas
+def bot_logic(user_message):
+    if 'hola' in user_message.lower():
+        return "¡Hola! ¿Cómo te puedo ayudar?"
+    elif 'reporte' in user_message.lower():
+        return "Puedes crear un nuevo reporte desde la sección de reportes."
+    else:
+        return "Lo siento, no entiendo tu pregunta. Intenta preguntarme algo más específico."
+
+# Endpoint para el chatbot
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    user_message = request.json.get('message')  # Obtener el mensaje del usuario
+    response = bot_logic(user_message)          # Lógica del chatbot
+    return jsonify({'response': response})      # Enviar la respuesta
+
+
+
+
 
 # Inicializar LoginManager
 login_manager = LoginManager(app)
