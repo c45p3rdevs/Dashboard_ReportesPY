@@ -78,35 +78,102 @@
             color: #555;
         }
 
-        .btn {
-            background-color: #343a40;
+        .btn-back {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            font-size: 18px;
+            background-color: #4d4f53;
             color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .btn-back:hover {
+            background-color: #ecb731;
         }
 
-        .btn:hover {
-            background-color: #495057;
-        }
+        /* Estilos del navbar */
+.navbar-custom {
+    background-color: #4d4f53; /* Color base que se mantiene */
+    padding: 10px 0; /* Ajuste de padding */
+    box-shadow: 0 4px 12px rgba(0, 105, 217, 0.2); /* Sombra suave para profundidad */
+    position: relative;
+    z-index: 1000;
+}
 
-        .create-report {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.container-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* Para darle un espacio interno a los lados */
+}
+
+.container-navbar h1 {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.menu-navbar {
+    display: flex;
+    gap: 20px; /* Espaciado entre los links */
+}
+
+.menu-navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.menu-navbar a:hover {
+    background-color: #ecb731; /* Color de hover */
+    transform: scale(1.05); /* Ligeramente más grande al pasar el mouse */
+}
+
+.menu-navbar a:active {
+    transform: scale(0.95); /* Efecto de presionar */
+}
+
+/* Animación de degradado en hover */
+.menu-navbar a:hover {
+    background: linear-gradient(135deg, #0056b3, #00408b);
+    box-shadow: 0 4px 12px rgba(0, 105, 217, 0.3); /* Sombra más intensa en hover */
+}
+
+/* Efecto de desplazamiento suave */
+html {
+    scroll-behavior: smooth;
+}
+
     </style>
 </head>
 <body>
-    <div class="navbar">
+    <!-- Navbar estilizado -->
+<div class="navbar-custom">
+    <div class="container-navbar">
         <h1>Dashboard - Reportes por Centro</h1>
+        <nav class="menu-navbar">
+            <a href="{{ url_for('dashboard') }}">Inicio</a>
+            <a href="{{ url_for('ver_reportes') }}">Ver Reportes</a>
+            <a href="{{ url_for('crear_reporte_usuario') }}">Crear Reporte</a>
+            <a href="{{ url_for('menu') }}">Menú</a>
+        </nav>
     </div>
+</div>
 
-    <div class="container">
-        <div class="create-report">
-            <a href="/crear_reporte" class="btn">Crear Reporte</a>
-        </div>
+   
+               
 
         <div class="centro-container">
             
@@ -250,7 +317,9 @@
                     </div>
                 {% endfor %}
             </div>
-
+            
+             <a href="{{ url_for('menu') }}" class="btn-back">Menu Principal</a>
+        
         </div>
     </div>
 </body>

@@ -99,6 +99,13 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html')
 
+# Nueva ruta para el menú
+@app.route('/menu')
+@login_required  # Proteger la ruta con autenticación
+def menu():
+    return render_template('menu.html')
+
+
 # Ruta del dashboard
 @app.route('/dashboard')
 @login_required  # Proteger la ruta con autenticación

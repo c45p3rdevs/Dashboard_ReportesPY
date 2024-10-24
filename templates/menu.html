@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Interactivo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+        }
+
+        .menu-container {
+            width: 100%;
+            background: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .menu-container nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+        }
+
+        .menu-container nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .menu-container nav a:hover {
+            background-color: #34495e;
+            border-radius: 25px;
+        }
+
+        .menu-container nav a::after {
+            content: '';
+            width: 0;
+            height: 3px;
+            background: #f39c12;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: all 0.3s ease;
+        }
+
+        .menu-container nav a:hover::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #34495e;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+        .dropdown-content a {
+            color: #ecf0f1;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #1abc9c;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            .menu-container nav {
+                flex-direction: column;
+            }
+
+            .menu-container nav a {
+                display: none;
+            }
+
+            .menu-container nav a.menu-btn {
+                display: block;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .menu-container nav a.menu-btn.active ~ a {
+                display: block;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <nav>
+            <div class="logo">Menú Moderno</div>
+            <a href="{{ url_for('dashboard') }}">Inicio</a>
+            <a href="{{ url_for('ver_reportes') }}">Reportes</a>
+            <a href="{{ url_for('new_dashboard') }}">Dashboard</a>
+            <div class="dropdown">
+                <a href="#" class="menu-btn">Opciones</a>
+                <div class="dropdown-content">
+                    <a href="configuracion.html">Configuración</a>
+                    <a href="soporte.html">Soporte</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
