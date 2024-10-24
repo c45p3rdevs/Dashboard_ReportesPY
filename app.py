@@ -121,7 +121,7 @@ def new_dashboard():
     return render_template('new_dashboard.html', reports=reports)
 
 # Crear un nuevo reporte
-@app.route('/create_report', methods=['POST'])
+@app.route('/crear_reporte', methods=['POST'])
 @login_required  # Proteger la ruta con autenticación
 def create_report():
     title = request.form.get('titulo')  # Cambiado a 'titulo' para que coincida con el formulario

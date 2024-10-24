@@ -3,13 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="https://i.ibb.co/6P00G1Y/icon.png" type="image/png">
     <title>Dashboard Reportes DGSP</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+        }
+
+        .menu-container {
+            width: 100%;
+            background: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .menu-container nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+        }
+
+        .menu-container nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .menu-container nav a:hover {
+            background-color: #34495e;
+            border-radius: 25px;
+        }
+
+        .menu-container nav a::after {
+            content: '';
+            width: 0;
+            height: 3px;
+            background: #f39c12;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: all 0.3s ease;
+        }
+
+        .menu-container nav a:hover::after {
+            width: 100%;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #34495e;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+        .dropdown-content a {
+            color: #ecf0f1;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #1abc9c;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            .menu-container nav {
+                flex-direction: column;
+            }
+
+            .menu-container nav a {
+                display: none;
+            }
+
+            .menu-container nav a.menu-btn {
+                display: block;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .menu-container nav a.menu-btn.active ~ a {
+                display: block;
+                margin-top: 10px;
+            }
+        }
+
+        .btn-primary {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            font-size: 18px;
+            background-color: #4d4f53;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+    </style>
 </head>
 <body>
+
+    <div class="menu-container">
+        <nav class="navbar static-top navbar-expand-lg">
+           
+            <a class="navbar-brand"  href="{{ url_for('dashboard') }}">
+                <img src="https://i.ibb.co/8N84mNN/dgsp-1.png" alt="..." height="100">
+            </a>
+            <a href="{{ url_for('dashboard') }}">Inicio</a>
+            <a href="{{ url_for('ver_reportes') }}">Reportes</a>
+            <a href="{{ url_for('new_dashboard') }}">Dashboard</a>
+            
+            <div class="dropdown">
+                <a href="#" class="menu-btn">Opciones</a>
+                <div class="dropdown-content">
+                    <a href="configuracion.html">Configuración</a>
+                    <a href="soporte.html">Soporte</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
     <div class="container">
         <h1 class="my-4">Dashboard de Reportes</h1>
 
@@ -17,9 +178,7 @@
             <a href="{{ url_for('ver_reportes') }}" class="btn btn-info mb-3">
                 <i class="fas fa-eye"></i> Ver Todos los Reportes
             </a>
-            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReportModal">
-                <i class="fas fa-plus"></i> Crear Nuevo Reporte
-            </button>
+            
             <!-- Botón para redirigir a new_dashboard.html -->
             <a href="{{ url_for('new_dashboard') }}" class="btn btn-secondary mb-3">
                 <i class="fas fa-chart-line"></i> Ver Nuevo Dashboard
@@ -59,6 +218,10 @@
         <canvas id="myChart" width="400" height="200"></canvas>
 
         <h3 class="my-4">Gráfico de Estado de Reportes</h3>
+
+        <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReportModal">
+            <i class="fas fa-plus"></i> Crear Nuevo Reporte
+        </button>
         <script>
             const ctx = document.getElementById('myChart').getContext('2d');
             const myChart = new Chart(ctx, {
@@ -93,6 +256,12 @@
                     }
                 }
             });
+
+
+            const menuBtn = document.querySelector('.menu-btn');
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+        });
         </script>
 
         <h2 class="my-4">Lista de Reportes</h2>
@@ -137,23 +306,41 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ url_for('create_report') }}" method="POST">
+                    <form action="{{ url_for('crear_reporte_usuario') }}" method="POST">
                         <div class="form-group">
-                            <label for="title" class="font-weight-bold">Título del Reporte</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Escribe el título del reporte" required>
+                            <label for="titulo" class="font-weight-bold">Título</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Escribe el título del reporte" required>
                         </div>
                         <div class="form-group">
                             <label for="descripcion" class="font-weight-bold">Descripción</label>
                             <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Describe brevemente el reporte" required></textarea>
                         </div>
+                        
                         <div class="form-group">
-                            <label for="estado" class="font-weight-bold">Estado</label>
-                            <select class="form-control" id="estado" name="estado" required>
+                            <label for="municipio">Centro:</label>
+                            <select id="municipio" name="municipio" class="form-control" required>
                                 <option value="" disabled selected>Selecciona el estado del reporte</option>
-                                <option value="Activo">Activo</option>
-                                <option value="Medio">Medio</option>
-                                <option value="Crítico">Crítico</option>
+                                <option value="Acámbaro">Acámbaro</option>
+                                <option value="Celaya">Celaya</option>
+                                <option value="Guanajuato">Guanajuato</option>
+                                <option value="Irapuato">Irapuato</option>
+                                <option value="León">León</option>
+                                <option value="Pénjamo">Pénjamo</option>
+                                <option value="Salamanca">Salamanca</option>
+                                <option value="San Felipe">San Felipe</option>
+                                <option value="San Miguel">San Miguel</option>
+                                <option value="Valle F">Valle F</option>
+                                <option value="Valle V">Valle V</option>
                             </select>
+                            <div class="form-group">
+                                <label for="estado" class="font-weight-bold">Estado</label>
+                                <select class="form-control" id="estado" name="estado" required>
+                                    <option value="" disabled selected>Selecciona el estado del reporte</option>
+                                    <option value="Activo">Activo</option>
+                                    <option value="Medio">Medio</option>
+                                    <option value="Crítico">Crítico</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
